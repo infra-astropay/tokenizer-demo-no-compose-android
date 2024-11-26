@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Pruebas No Compose</string>
+
+    <string name="clear">Clear</string>
+    <string name="authorization_token">Authorization Token</string>
+    <string name="save">Save</string>
+    <string name="copy">Copy</string>
+    <string name="reveal_data">Reveal the data</string>
+    <string name="number_card_token">Number Card Token</string>
+    <string name="show_data">Show data</string>
+    <string name="hide_data">Hide data</string>
+    <string name="loading">Loading</string>
+    <string name="authorization_token_saved">Authorization Token Saved</string>
+    <string name="field_not_empty">The field must not be empty</string>
+    <string name="card_token_saved">Card Token Saved</string>
+    <string name="first_save_auth_token">Please first save an authorization token</string>
+    <string name="first_save_card_token">Please save a number card token</string>
+    <string name="text_copied">The revealed text was copied</string>
+    <string name="network_error">Network Error</string>
+    <string name="invalid_token">Invalid Token</string>
+    <string name="collect_android_views_activity">Collect Android View Activity</string>
+    <string name="reveal_android_views_activity">Reveal Android View Activity</string>
+    <string name="card_digits_hint">Enter the 16 digits of the card</string>
+    <string name="pin_digits_hint">Enter the 4 digits of the pin</string>
+    <string name="tokenize_data_button">Tokenize data</string>
+    <string name="text_view_pan_token">Card token: %s</string>
+    <string name="text_view_pin_token">Pin token: %s</string>
+    <string name="text_view_show_pin">Show</string>
+</resources>
