@@ -2,11 +2,11 @@
 # Tokenizer Android SDK
 
 ## 1. Table of contents
-- [1. Table of contents](#table-of-contents)
-- [2. Overview](#overview)
-- [3. Getting started](#getting-started)
-- [4. Collect](#collect)
-- [5. Revelaer](#revealer)
+- [1. Table of contents](#1-table-of-contents)
+- [2. Overview](#2-overview)
+- [3. Getting started](#3-getting-started)
+- [4. Collect](#4-collect)
+- [5. Revealer](#5-revealer)
 
 ## 2. Overview
 The Astropay Tokenizer SDK is a powerful tool designed to facilitate easy integration of AstroPay's secure payment solutions into your Android applications. This SDK provides a way to tokenize and reveal sensitive payment information, ensuring that your transactions are both secure and efficient.
@@ -88,12 +88,12 @@ implementation com.aptokenizer.tokenizer:tokenizer:<version>
 
 ### 4.1 Table of contents
 
-- [4.2 Initialization](#initialization)
-- [4.2 SDK functions](#sdk-functions)
-- [4.3 Components](#components)
-    - [4.3.2 For Jetpack Compose](#for-jetpack-compose)
-    - [4.3.3. For Android Views](#for-android-views)
-- [Instructions](#instructions)
+- [4.2 Initialization](#42-initialization)
+- [4.3 SDK functions](#43-sdk-functions)
+- [4.4 Components](#44-components)
+  - [4.4.1 For Jetpack Compose](#441-for-jetpack-compose)
+  - [4.4.2. For Android Views](#442-for-android-views)
+- [4.5 Instructions](#45-instructions)
 
 ### 4.2 Initialization
 
@@ -340,12 +340,12 @@ Don't forget to define a unique fieldName for each field in your form, with this
 
 ### Table of contents
 
-- [5.1 Initialization](#initialization)
-- [5.2 SDK functions](#sfk-functions)
-- [5.3 Components](https://www.notion.so/Revealer-120ad6d068a58097aa8fe25014166966?pvs=21)
-    - [5.3.1 For Jetpack Compose](#for-jetpack-compose)
-    - [5.3.2 For Android Views](#for-android-views)
-- [5.4 Instructions](#instructions)
+- [5.1 Initialization](#51-initialization)
+- [5.2 SDK functions](#52-sdk-functions)
+- [5.3 Components](#53-components)
+  - [5.3.1 For Jetpack Compose](#531-for-jetpack-compose)
+  - [5.3.2 For Android Views](#532-for-android-views)
+- [5.4 Instructions](#54-instructions)
 
 ### 5.1 Initialization
 
@@ -453,18 +453,18 @@ Create the Compose view(s) needed for revelation, one for each token to be revea
 
 ```kotlin
 TRText(
-    tokenRevealer = tokenRevealer,
-    modifier = Modifier
-        .weight(1f)
-        .height(35.dp),
-    contentPath = contentPath,
-    hintText = "• • • •  • • • •  • • • •  • • • •",
-    showDataRevealed = show,
-    fontSize = 18.sp,
-    regexReplaceField = RegexReplaceField(
-        pattern = "(\\d{4})(?=\\d)",
-        replacement = "$1 "
-    )
+  tokenRevealer = tokenRevealer,
+  modifier = Modifier
+    .weight(1f)
+    .height(35.dp),
+  contentPath = contentPath,
+  hintText = "• • • •  • • • •  • • • •  • • • •",
+  showDataRevealed = show,
+  fontSize = 18.sp,
+  regexReplaceField = RegexReplaceField(
+    pattern = "(\\d{4})(?=\\d)",
+    replacement = "$1 "
+  )
 )
 ```
 
@@ -524,9 +524,9 @@ Subscribe the tokens to be revealed in the required section of your app.
 
 ```kotlin
 TokenRevealer.subscribe(
-   contentPath = "contentPathExample",
-   token = "tok_test_dfi3uAtS02KyeoQ2ja2C7Fd8MXe84MBd123",
-   textView = androidTextView // Only if you use Android Views
+  contentPath = "contentPathExample",
+  token = "tok_test_dfi3uAtS02KyeoQ2ja2C7Fd8MXe84MBd123",
+  textView = androidTextView // Only if you use Android Views
 )
 ```
 
