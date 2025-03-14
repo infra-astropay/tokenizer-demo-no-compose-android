@@ -580,3 +580,147 @@ TokenRevealer.unsubscribe("contentPath")
 
 - **AP Tokenizer SDK (`tokenrevealer`)** → provides an API for interacting with the AP Tokenizer Vault
 - **AP Tokenizer DEMO (`app`)** → sample application to act as the host app for testing the **SDK** during development
+
+
+## 7. TokenCollect SDK – Error Handling:
+
+### Error Structure
+
+When an error occurs, the SDK returns an instance of `ResultWrapper.Error`, which contains:
+- **HTTP status code (`result.code`)**
+- **Error message (`exception.message`)**
+
+Errors follow this format:
+
+```kotlin
+Result.Error("${result.code} ${DataErrors.CLIENT_ERROR}", exception.message ?: String())
+```
+
+---
+
+## Error Codes and Messages
+
+| **HTTP Code** | **Error Code**            | **SDK Error Message Format**                  | **Possible Causes** |
+|--------------|---------------------------|-----------------------------------------------|----------------------|
+| **404**      | `TOKEN_NOT_FOUND`          | `"404 token_not_found"`                      | Token not found or expired. |
+| **400**      | `INVALID_PRINCIPAL_ID`     | `"400 invalid_principal_id"`                 | Invalid format of principal ID. |
+| **429**      | `TOKEN_LIMIT`              | `"429 token_limit"`                          | Exceeded the maximum number of allowed tokens. |
+| **401**      | `AUTHENTICATION_ERROR`     | `"401 auth_error"`                           | Missing or invalid JWT authentication token.<br>Possible reasons:<br>- Invalid `kid` (Key ID) in JWT Header.<br>- Invalid `iss` (Issuer ID) in JWT body.<br>- JWT token expired or has an invalid lifetime. |
+| **403**      | `OPERATION_NOT_ALLOWED`    | `"403 operation_not_allowed"`                | The requested operation is not allowed. |
+| **400**      | `BAD_REQUEST`              | `"400 bad_request"`                          | Malformed or invalid request format. |
+| **500**      | `INTERNAL_ERROR`           | `"500 generic_error"`                        | Unexpected server-side error. |
+| **409**      | `DUPLICATE_REQUEST`        | `"409 duplicate_request"`                    | A duplicate request was detected. |
+
+---
+
+## Backend Error Mapping in SDK
+
+In the **data layer (`APTRepositoryImpl`)**, errors are transformed into custom exceptions. In the **UseCase**, the SDK maps them to `ResultWrapper.Error`.
+
+### Example of SDK Error Mapping
+```kotlin
+is ResultWrapper.Error -> {
+    return when (val exception = result.exception) {
+        is ApiException.NetworkError -> Result.NetworkError
+        is ApiException.ClientError -> 
+            Result.Error("${result.code} ${DataErrors.CLIENT_ERROR}", exception.message ?: String())
+        is ApiException.ServerError -> 
+            Result.Error("${result.code} ${DataErrors.SERVER_ERROR}", exception.message ?: String())
+        is ApiException.UnexpectedError -> 
+            Result.Error("${result.code} ${DataErrors.UNEXPECTED_ERROR}", exception.message ?: String())
+        is ApiException.InvalidToken -> 
+            Result.InvalidToken(exception.message ?: String())
+        else -> Result.Error("${result.code} ${DataErrors.UNEXPECTED_ERROR}", exception.message ?: String())
+    }
+}
+```
+
+---
+
+## Example Error Responses from Backend
+
+### 1️⃣ Token Not Found (404)
+```json
+{
+    "error": "tokenizer_api_token_not_found",
+    "description": "Token not found: tok_test_4R72AXd09GZ08ty0dn6JJ860IulbxwKQyEU",
+    "message": "Token not found : tok_test_4R72AXd09GZ08ty0dn6JJ860IulbxwKQyEU",
+    "internal_term": "token_not_found"
+}
+```
+**SDK Output:**  
+```kotlin
+Result.Error("404 token_not_found", "Token not found : tok_test_4R72AXd09GZ08ty0dn6JJ860IulbxwKQyEU")
+```
+
+### 2️⃣ Invalid Principal ID (400)
+```json
+{
+    "error": "invalid_principal_id",
+    "description": "The provided principal ID format is invalid.",
+    "message": "Invalid ID format"
+}
+```
+**SDK Output:**  
+```kotlin
+Result.Error("400 invalid_principal_id", "Invalid ID format")
+```
+
+### 3️⃣ Token Limit Exceeded (429)
+```json
+{
+    "error": "token_limit",
+    "description": "The maximum allowed tokens per principal has been reached.",
+    "message": "Too many tokens requested."
+}
+```
+**SDK Output:**  
+```kotlin
+Result.Error("429 token_limit", "Too many tokens requested.")
+```
+
+### 4️⃣ Authentication Error (401)
+```json
+{
+    "error": "auth_error",
+    "description": "Missing or invalid authentication token.",
+    "message": "JWT token is missing or expired."
+}
+```
+**SDK Output:**  
+```kotlin
+Result.Error("401 auth_error", "JWT token is missing or expired.")
+```
+
+---
+
+## How to Handle Errors in the App
+
+### Example: Handling SDK Errors in a ViewModel
+```kotlin
+when (val result = tokenCollect.reveal(accessToken, token)) {
+    is ResultWrapper.Success -> {
+        val tokenizedData = result.data
+        // Handle successful data retrieval
+    }
+    is ResultWrapper.Error -> {
+        Log.e("TokenCollect", "Error: ${result.code} - ${result.exception.message}")
+        when (result.exception) {
+            is ApiException.InvalidToken -> showError("Authentication error")
+            is ApiException.ClientError -> showError("Client-side error")
+            is ApiException.ServerError -> showError("Server error")
+            is ApiException.NetworkError -> showError("Network issue, check connection")
+            else -> showError("Unexpected error occurred")
+        }
+    }
+}
+```
+
+---
+
+## Summary
+✅ **The SDK returns structured error messages** in the format: `"HTTP_CODE error_code"`  
+✅ **Each error has a clear meaning and possible resolution**  
+✅ **Errors can be handled in the app using `ResultWrapper.Error`**  
+
+---
